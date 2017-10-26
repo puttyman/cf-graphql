@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>button, textarea {display: block; width: 100%; margin-bottom: 20px; font-size: 24px;}</style>
+</head>
+<body style="padding: 20px;">
+
+<textarea id="input" rows="6"></textarea>
+<button id="action">go!</button>
+<textarea id="output" rows="10"></textarea>
+
+<script src="cf-graphql.js"></script>
+
+<script>
+
+const exec = cfGraphql(
+  'd0nux3lw6z7l',
+  '3622a4162d173f335f465f286fd5aac21888ba66744a76a24708c0a4f98999ef'
+);
+
+const onClick = (input, done) => exec(input).then(done, done);
+
+const [t1, btn, t2] = document.querySelectorAll('#action, #input, #output');
+const setOutput = v => t2.value = typeof v === 'string' ? v : JSON.stringify(v, null, 2);
+btn.addEventListener('click', () => onClick(t1.value, setOutput), false);
+
+</script>
+
+</body>
+</html>

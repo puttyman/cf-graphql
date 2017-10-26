@@ -12,7 +12,7 @@ module.exports = createClient;
 function createClient (config) {
   return {
     getContentTypes: function () {
-      return createContentfulClient(CMA, config)
+      return createContentfulClient(CDA, config)
       .get('/content_types', {limit: 1000})
       .then(res => res.items);
     },
