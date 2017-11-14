@@ -11,6 +11,7 @@ const {
 } = require('graphql');
 
 const {AssetType, EntryType, LocationType} = require('./base-types.js');
+const { resolveWithDirectives } = require('./directives');
 
 const NOTHING = {};
 
@@ -34,12 +35,19 @@ module.exports = {
 
 function createFieldConfig (Type, field, resolveFn) {
   return {
-    type: Type,
-    resolve: (entity, _, ctx) => {
-      const fieldValue = _get(entity, ['fields', field.id], NOTHING);
-      if (fieldValue !== NOTHING) {
-        return resolveFn ? resolveFn(fieldValue, ctx) : fieldValue;
+    type: Type, resolve: (source, args, context, info) => {
+      const fieldValue   = _get(source, ['fields', field.id], NOTHING);
+      const directives   = _get(info, 'fieldNodes[0].directives', []);
+
+      if(fieldValue === NOTHING) {
+        return;
       }
+
+      if (directives.length) {
+        return resolveWithDirectives(Type, field, resolveFn, source, args, context, info);
+      }
+
+      return resolveFn ? resolveFn(fieldValue, context) : fieldValue;
     }
   };
 }

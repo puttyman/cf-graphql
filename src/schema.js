@@ -13,6 +13,7 @@ const {
 const {EntrySysType, EntryType, IDType, CollectionMetaType} = require('./base-types.js');
 const typeFieldConfigMap = require('./field-config.js');
 const createBackrefsType = require('./backref-types.js');
+const { directives } = require('./directives');
 
 module.exports = {
   createSchema,
@@ -21,9 +22,14 @@ module.exports = {
 };
 
 function createSchema (spaceGraph, queryTypeName) {
-  return new GraphQLSchema({
+  const schema =  new GraphQLSchema({
+    directives: [
+      ...directives
+    ],
     query: createQueryType(spaceGraph, queryTypeName)
   });
+
+  return schema;
 }
 
 function createQueryType (spaceGraph, name = 'Query') {
